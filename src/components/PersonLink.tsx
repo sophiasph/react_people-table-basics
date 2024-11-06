@@ -1,12 +1,11 @@
 import React from 'react';
 import { Person } from '../types';
 
-type PersonLinkProps = {
+type PeopleLinkProps = {
   person: Person | null;
-  onSelect: () => void;
 };
 
-export const PersonLink: React.FC<PersonLinkProps> = ({ person, onSelect }) => {
+export const PersonLink: React.FC<PeopleLinkProps> = ({ person }) => {
   if (!person) {
     return <>-</>;
   }
@@ -15,10 +14,6 @@ export const PersonLink: React.FC<PersonLinkProps> = ({ person, onSelect }) => {
     <a
       href={`#/people/${person.slug}`}
       className={person.sex === 'f' ? 'has-text-danger' : undefined}
-      onClick={event => {
-        event.preventDefault();
-        onSelect();
-      }}
     >
       {person.name}
     </a>

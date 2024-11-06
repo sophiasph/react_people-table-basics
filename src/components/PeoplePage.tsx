@@ -4,12 +4,17 @@ import { getPeople } from '../api';
 import { Person } from '../types';
 import { PersonLink } from './PersonLink';
 import classNames from 'classnames';
+import { useParams } from 'react-router-dom';
 
 export const PeoplePage = () => {
+  const { slug } = useParams();
+
   const [people, setPeople] = useState<Person[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedPerson, setSelectedPerson] = useState<string | null>(null);
+  const [selectedPerson, setSelectedPerson] = useState<string | null>(
+    slug || null,
+  );
 
   useEffect(() => {
     const fetchPeople = async () => {
@@ -43,9 +48,11 @@ export const PeoplePage = () => {
         <div className="box table-container">
           {loading && <Loader />}
 
-          <p data-cy="peopleLoadingError" className="has-text-danger">
-            {error}
-          </p>
+          {error && (
+            <p data-cy="peopleLoadingError" className="has-text-danger">
+              {error}
+            </p>
+          )}
           {people.length === 0 && !loading && (
             <p data-cy="noPeopleMessage">There are no people on the server</p>
           )}
@@ -83,32 +90,24 @@ export const PeoplePage = () => {
                         'has-background-warning':
                           person.slug === selectedPerson,
                       })}
+                      onClick={() => setSelectedPerson(person.slug)}
                     >
                       <td>
-                        <PersonLink
-                          person={person}
-                          onSelect={() => setSelectedPerson(person.slug)}
-                        />
+                        <PersonLink person={person} />
                       </td>
                       <td>{person.sex}</td>
                       <td>{person.born}</td>
                       <td>{person.died}</td>
                       <td>
                         {mother ? (
-                          <PersonLink
-                            person={mother}
-                            onSelect={() => setSelectedPerson(mother.slug)}
-                          />
+                          <PersonLink person={mother} />
                         ) : (
                           person.motherName || '-'
                         )}
                       </td>
                       <td>
                         {father ? (
-                          <PersonLink
-                            person={father}
-                            onSelect={() => setSelectedPerson(father.slug)}
-                          />
+                          <PersonLink person={father} />
                         ) : (
                           person.fatherName || '-'
                         )}
